@@ -7,9 +7,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class JwtUtil {
@@ -20,7 +18,10 @@ public class JwtUtil {
 // Generate token with custom expiration
     public String generateToken(String username, String role, long expirationMillis) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", role);
+
+        // Always store as a List
+        claims.put("roles", Collections.singletonList("ROLE_" + role)); // <-- NOTE THIS
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
@@ -29,6 +30,7 @@ public class JwtUtil {
                 .signWith(key)
                 .compact();
     }
+
 
 
     // Validate Token
@@ -52,8 +54,9 @@ public class JwtUtil {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
 
-    public String extractRole(String token) {
-        return extractAllClaims(token).get("role", String.class);
+    public List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+        return claims.get("roles", List.class); // ROLES, not role
     }
 
 }

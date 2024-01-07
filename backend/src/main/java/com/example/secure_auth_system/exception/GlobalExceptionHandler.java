@@ -25,6 +25,7 @@ public class GlobalExceptionHandler {
         error.put("status", 500);
         error.put("error", "Internal Server Error");
         error.put("message", ex.getMessage());
+        ex.printStackTrace();
         return error;
     }
 

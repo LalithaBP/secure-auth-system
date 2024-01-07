@@ -9,4 +9,5 @@ public class AuthRequest {
     @NotBlank(message = "Username must not be blank")
     private String username;
     private String password;
+    private String role;
 }

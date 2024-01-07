@@ -23,7 +23,7 @@ public class AuthService {
     private JwtUtil jwtUtil;
 
 
-    public String signup(String username, String password) {
+    public String signup(String username, String password, String role) {
         Optional<User> existingUser = userRepository.findByUsername(username);
 
         if (existingUser.isPresent()) {
@@ -33,6 +33,11 @@ public class AuthService {
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password)); // Hash the password
+        if (role != null && !role.isEmpty()) {
+            user.setRole(role); // set role from request
+        } else {
+            user.setRole("USER"); // default to USER if not specified
+        }
         userRepository.save(user);
 
         userRepository.save(user);
